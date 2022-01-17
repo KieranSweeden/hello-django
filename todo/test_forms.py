@@ -2,8 +2,11 @@ from django.test import TestCase
 from .forms import ItemForm
 
 
+# Inherits from testcase class
 class TestItemForm(TestCase):
-
+    """
+    Class containing various functions used to test forms
+    """
     def test_item_name_is_required(self):
         form = ItemForm({"name": ""})
 
