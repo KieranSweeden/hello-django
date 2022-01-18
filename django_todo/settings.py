@@ -14,6 +14,9 @@ from pathlib import Path
 import dj_database_url
 import os
 
+# Create variable available in environment (variable found in gitpod settings)
+development = os.getenv("DEVELOPMENT", False)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,11 +28,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-fh)fh4ive(bib=4u9wf)#7$%ufxc#7r!8uey68fx*c^2^^$5kx')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# using development means when in development it'll be true
+# however on heroku it'll be false
+DEBUG = development
 
-ALLOWED_HOSTS = [
-    os.environ.get("HEROKU_HOSTNAME", "hello-django-kjs.herokuapp.com")
-]
+if development:
+    ALLOWED_HOSTS = ["localhost"]
+
+else:
+    ALLOWED_HOSTS = [
+        os.environ.get("HEROKU_HOSTNAME", "hello-django-kjs.herokuapp.com")
+    ]
 
 
 # Application definition
@@ -78,16 +87,18 @@ WSGI_APPLICATION = 'django_todo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-DATABASES = {
-    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
-}
+# If in development mode, use this database
+if development:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+    }
 
 
 # Password validation
